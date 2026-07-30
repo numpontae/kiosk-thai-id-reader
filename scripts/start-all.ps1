@@ -6,14 +6,15 @@ $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
 Write-Host "=== Thai ID Card Reader ===" -ForegroundColor Cyan
-Write-Host "1) Starting Hub on port 8080..."
-Write-Host "2) Starting Card Reader (connects to ws://localhost:8080)"
+Write-Host "1) Starting Hub on port 18081..."
+Write-Host "2) Starting Card Reader (connects to ws://localhost:18081)"
 Write-Host ""
-Write-Host "iPad/Web: ws://<this-pc-ip>:8080" -ForegroundColor Yellow
+Write-Host "iPad/Web: ws://<this-pc-ip>:18081" -ForegroundColor Yellow
 Write-Host "Press Ctrl+C to stop both." -ForegroundColor Gray
 Write-Host ""
 
-$env:HUB_URL = "ws://localhost:8080"
+$env:HUB_PORT = "18081"
+$env:HUB_URL = "ws://localhost:18081"
 
 # Start hub in background job
 $hubJob = Start-Job -ScriptBlock {

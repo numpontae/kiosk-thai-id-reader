@@ -1,7 +1,7 @@
 import WebSocket from "ws"
 import { randomUUID } from "crypto"
 
-const HUB_PORT = Number(process.env.HUB_PORT ?? 8080)
+const HUB_PORT = Number(process.env.HUB_PORT ?? 18081)
 const REQUEST_TIMEOUT_MS = Number(process.env.READ_REQUEST_TIMEOUT_MS ?? 60000)
 
 type Role = "ipad" | "reader"

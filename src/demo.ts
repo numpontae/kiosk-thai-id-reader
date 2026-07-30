@@ -2,7 +2,7 @@ import os from "os"
 import WebSocket from "ws"
 import { ThaiIdCardReader } from "./index"
 
-const HUB_URL = process.env.HUB_URL ?? "ws://localhost:8080"
+const HUB_URL = process.env.HUB_URL ?? "ws://10.104.10.85:18081"
 const READER_NAME = process.env.READER_NAME ?? os.hostname()
 
 type PendingRequest = {
