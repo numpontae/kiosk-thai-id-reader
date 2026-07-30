@@ -1,0 +1,4 @@
+config.json
+src/sendToServer.ts
+node_modules
+package-lock.json
