@@ -4,6 +4,7 @@ import { ThaiIdCardReader } from "./index"
 
 const HUB_URL = process.env.HUB_URL ?? "ws://10.104.10.85:18081"
 const READER_NAME = process.env.READER_NAME ?? os.hostname()
+const DISABLE_HUB = process.env.DISABLE_HUB === "true"
 
 type PendingRequest = {
   requestId: string
@@ -22,8 +23,10 @@ function send(payload: object) {
 
 function clearPendingRequest() {
   pendingRequest = null
-  reader.setReadGate(false)
-  send({ type: "reader_ready" })
+  if (!DISABLE_HUB) {
+    reader.setReadGate(false)
+    send({ type: "reader_ready" })
+  }
 }
 
 function connectHub() {
@@ -106,14 +109,19 @@ console.log("Reader config", {
   postRemovalSettleMs: 3000,
   hubUrl: HUB_URL,
   readerName: READER_NAME,
+  disableHub: DISABLE_HUB,
 })
 
-reader.setReadGate(false)
+reader.setReadGate(DISABLE_HUB)
 reader.init()
 
 reader.onReadComplete((data) => {
+  console.log("Card read complete — data:", JSON.stringify(data, null, 2))
+
   if (!pendingRequest) {
-    console.log("Card read complete (no pending request — ignored)")
+    if (!DISABLE_HUB) {
+      console.log("Card read complete (no pending request — ignored)")
+    }
     return
   }
 
@@ -128,7 +136,11 @@ reader.onReadComplete((data) => {
 
 reader.onReadError((error) => {
   if (!pendingRequest) {
-    console.error("Card read error (no pending request):", error)
+    if (!DISABLE_HUB) {
+      console.error("Card read error (no pending request):", error)
+    } else {
+      console.error("Card read error:", error)
+    }
     return
   }
 
@@ -141,4 +153,8 @@ reader.onReadError((error) => {
   clearPendingRequest()
 })
 
-connectHub()
+if (DISABLE_HUB) {
+  console.log("Hub disabled (DISABLE_HUB=true): waiting for card insert and reading directly")
+} else {
+  connectHub()
+}
